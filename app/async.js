@@ -1,11 +1,25 @@
 exports = (typeof window === 'undefined') ? global : window;
 
 exports.asyncAnswers = {
-  async : function(value) {
 
+  async : function(value) {
+    var def = $.Deferred();
+    setTimeout(function() {
+      def.resolve(value);
+    }, 10);
+    return def.promise();
   },
 
   manipulateRemoteData : function(url) {
 
+    var def = $.Deferred();
+
+    $.ajax(url).then(function(resp) {
+      var people = $.map(resp.people, function(person){
+        return person.name;
+      });
+      def.resolve(people.sort());
+    });
+    return def.promise();
   }
 };
